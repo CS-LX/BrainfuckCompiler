@@ -1,4 +1,4 @@
-﻿namespace BrainfuckCompiler
+﻿namespace BrainfxxkCompiler
 {
     partial class Form1
     {

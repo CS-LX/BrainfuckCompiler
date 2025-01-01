@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2B056B14-B42D-4AAC-B378-56082F2C8F33}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>BrainfuckCompiler</RootNamespace>
-    <AssemblyName>BrainfuckCompiler</AssemblyName>
+    <RootNamespace>BrainfxxkCompiler</RootNamespace>
+    <AssemblyName>BrainfxxkCompiler</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -82,6 +82,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
     <None Include="packages.config" />

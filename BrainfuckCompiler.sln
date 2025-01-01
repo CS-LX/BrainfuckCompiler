@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrainfuckCompiler", "BrainfuckCompiler.csproj", "{2B056B14-B42D-4AAC-B378-56082F2C8F33}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrainfxxkCompiler", "BrainfxxkCompiler.csproj", "{2B056B14-B42D-4AAC-B378-56082F2C8F33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
