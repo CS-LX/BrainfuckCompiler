@@ -18,7 +18,7 @@ using BrainfxxkCompiler.Interpreter;
 namespace BrainfxxkCompiler {
     public partial class Form1 : Form {
         IBFInterpreter interpreter = new BFInterpreter();
-        IBFCompiler compiler = new ILPointerCompiler();
+        IBFCompiler compiler = new ILOptimizedPointerCompiler();
         Thread listUpdater = new Thread(() => { });
 
         Style GreenStyle = new TextStyle(Brushes.Green, null, FontStyle.Regular);

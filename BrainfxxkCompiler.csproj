@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Compiler\FullCSharpCompiler.cs" />
     <Compile Include="Compiler\IBFCompiler.cs" />
+    <Compile Include="Compiler\ILOptimizedPointerCompiler.cs" />
     <Compile Include="Compiler\ILPointerCompiler.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
