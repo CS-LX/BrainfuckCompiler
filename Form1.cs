@@ -12,11 +12,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BrainfxxkCompiler.Compiler;
+using BrainfxxkCompiler.Interpreter;
 
-namespace BrainfxxkCompiler
-{
-    public partial class Form1 : Form
-    {
+namespace BrainfxxkCompiler {
+    public partial class Form1 : Form {
+        IBFInterpreter interpreter = new BFInterpreter();
+        IBFCompiler compiler = new FullCSharpCompiler();
         Thread listUpdater = new Thread(() => { });
 
         Style GreenStyle = new TextStyle(Brushes.Green, null, FontStyle.Regular);
@@ -24,68 +26,53 @@ namespace BrainfxxkCompiler
         Style GrayStyle = new TextStyle(Brushes.Gray, null, FontStyle.Regular);
         Style BlackStyle = new TextStyle(Brushes.Black, null, FontStyle.Bold);
 
-        public Form1()
-        {
+        public Form1() {
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
             codeBox.DefaultStyle = (TextStyle)BlackStyle;
         }
 
-        private void compileBFButton_Click(object sender, EventArgs e)
-        {
+        private void compileBFButton_Click(object sender, EventArgs e) {
             string path = compilePath.Text + fileName.Text + ".exe";
-            BFCompiler.BFToExe(codeBox.Text, path);
+            compiler.CompileToExe(codeBox.Text, path);
             MessageBox.Show("编译完成");
             Process.Start("explorer.exe", "/select, " + path);
         }
 
-        private void runBFButton_Click(object sender, EventArgs e)
-        {
-            resultBox.Text = BFCompiler.Run(codeBox.Text, out int[] data);
-            if (listUpdater.ThreadState == System.Threading.ThreadState.Running)
-            {
+        private void runBFButton_Click(object sender, EventArgs e) {
+            resultBox.Text = interpreter.Run(codeBox.Text, out int[] data);
+            if (listUpdater.ThreadState == System.Threading.ThreadState.Running) {
                 listUpdater.Abort();
             }
-            listUpdater = new Thread(() =>
-            {
-                if (resultDataBox.Items.Count != BFCompiler.dataLength)
-                {
-                    resultDataBox.Items.Clear();
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        resultDataBox.Items.Add($"[{i}]" + "\t" + data[i]);
+            listUpdater = new Thread(() => {
+                    if (resultDataBox.Items.Count != interpreter.DataLength) {
+                        resultDataBox.Items.Clear();
+                        for (int i = 0; i < data.Length; i++) {
+                            resultDataBox.Items.Add($"[{i}]" + "\t" + data[i]);
+                        }
+                        return;
                     }
-                    return;
-                }
-                for (int i = 0; i < BFCompiler.dataLength; i++)
-                {
-                    var o = resultDataBox.Items[i];
-                    string oS = o.ToString().Split(new char[] { ']' }, StringSplitOptions.RemoveEmptyEntries)[1];
-                    if (int.Parse(oS) != data[i])
-                    {
-                        resultDataBox.Items[i] = ($"[{i}]" + "\t" + data[i]);
-
+                    for (int i = 0; i < interpreter.DataLength; i++) {
+                        var o = resultDataBox.Items[i];
+                        string oS = o.ToString().Split(new[] { ']' }, StringSplitOptions.RemoveEmptyEntries)[1];
+                        if (int.Parse(oS) != data[i]) {
+                            resultDataBox.Items[i] = ($"[{i}]" + "\t" + data[i]);
+                        }
                     }
                 }
-            });
+            );
             listUpdater.Start();
         }
 
-        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
 
-        }
-        private void fileName_TextChanged(object sender, EventArgs e)
-        {
-            if (fileName.TextLength < 1)
-            {
+        private void fileName_TextChanged(object sender, EventArgs e) {
+            if (fileName.TextLength < 1) {
                 fileName.Text = "BF";
             }
         }
 
-        private void codeBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
+        private void codeBox_TextChanged(object sender, TextChangedEventArgs e) {
             e.ChangedRange.ClearStyle(GreenStyle);
             //注释
             e.ChangedRange.SetStyle(GreenStyle, @"//.*$", RegexOptions.Multiline);

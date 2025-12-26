@@ -52,8 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BFCompiler.cs" />
-    <Compile Include="BFInterpreter.cs" />
+    <Compile Include="Compiler\FullCSharpCompiler.cs" />
+    <Compile Include="Compiler\IBFCompiler.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,6 +66,8 @@
     <Compile Include="InputIntDialog.Designer.cs">
       <DependentUpon>InputIntDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interpreter\BFInterpreter.cs" />
+    <Compile Include="Interpreter\IBFInterpreter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
