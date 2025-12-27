@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.IO;
+using BrainfxxkCompiler.Settings;
 
 namespace BrainfxxkCompiler.Compiler
 {
@@ -16,7 +17,7 @@ namespace BrainfxxkCompiler.Compiler
             public int Value;
         }
 
-        public void CompileToExe(string brainfuckCode, string outputFilePath)
+        public void CompileToExe(string brainfuckCode, string outputFilePath, CompileSettings settings)
         {
             string fileName = Path.GetFileName(outputFilePath);
             string assemblyName = Path.GetFileNameWithoutExtension(fileName);
@@ -89,12 +90,26 @@ namespace BrainfxxkCompiler.Compiler
                         break;
 
                     case Op.In: // 输入逻辑保持不变
-                        il.Emit(OpCodes.Ldstr, "请输入ASCII码");
-                        il.Emit(OpCodes.Call, typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }));
-                        il.Emit(OpCodes.Ldloc, lbCurrentPtr);
-                        il.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
-                        il.Emit(OpCodes.Call, typeof(byte).GetMethod("Parse", new[] { typeof(string) }));
-                        il.Emit(OpCodes.Stind_I1);
+                        switch (settings.InputMode) {
+                            case InputMode.ASCIICode:
+                                // *currentPtr = byte.Parse(Console.ReadLine())
+                                il.Emit(OpCodes.Ldstr, "请输入ASCII码");
+                                il.Emit(OpCodes.Call, typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }));
+                                il.Emit(OpCodes.Ldloc, lbCurrentPtr);
+                                il.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
+                                il.Emit(OpCodes.Call, typeof(byte).GetMethod("Parse", new[] { typeof(string) }));
+                                il.Emit(OpCodes.Stind_I1); // 存储到指针地址
+                                break;
+                            case InputMode.Char:
+                                // *currentPtr = Convert.ToByte(Console.ReadLine()[0]);
+                                il.Emit(OpCodes.Ldstr, "请输入字符:");
+                                il.Emit(OpCodes.Call, typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }));
+                                il.Emit(OpCodes.Ldloc, lbCurrentPtr);
+                                il.Emit(OpCodes.Call, typeof(Console).GetMethod("Read", Type.EmptyTypes));
+                                il.Emit(OpCodes.Conv_U1);
+                                il.Emit(OpCodes.Stind_I1);
+                                break;
+                        }
                         break;
 
                     case Op.LoopStart:

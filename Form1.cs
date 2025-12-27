@@ -14,12 +14,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using BrainfxxkCompiler.Compiler;
 using BrainfxxkCompiler.Interpreter;
+using BrainfxxkCompiler.Settings;
 
 namespace BrainfxxkCompiler {
     public partial class Form1 : Form {
         IBFInterpreter interpreter = new BFInterpreter();
         IBFCompiler compiler = new ILOptimizedPointerCompiler();
         Thread listUpdater = new Thread(() => { });
+        CompileSettings compileSettings = new();
 
         Style GreenStyle = new TextStyle(Brushes.Green, null, FontStyle.Regular);
         Style BlueStyle = new TextStyle(Brushes.Blue, null, FontStyle.Bold);
@@ -30,11 +32,17 @@ namespace BrainfxxkCompiler {
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
             codeBox.DefaultStyle = (TextStyle)BlackStyle;
+
+            var statusValues = Enum.GetValues(typeof(InputMode));
+            foreach (InputMode status in statusValues) {
+                compileInputModeCombo.Items.Add(status);
+            }
+            compileInputModeCombo.SelectedItem = compileSettings.InputMode;
         }
 
         private void compileBFButton_Click(object sender, EventArgs e) {
             string path = compilePath.Text + fileName.Text + ".exe";
-            compiler.CompileToExe(codeBox.Text, path);
+            compiler.CompileToExe(codeBox.Text, path, compileSettings);
             MessageBox.Show("编译完成");
             Process.Start("explorer.exe", "/select, " + path);
         }
@@ -82,6 +90,10 @@ namespace BrainfxxkCompiler {
 
             //非特定字符灰色
             e.ChangedRange.SetStyle(GrayStyle, @"[^\>\<\+\-\.\,\[\]]", RegexOptions.Multiline);
+        }
+
+        void compileInputModeCombo_SelectedIndexChanged(object sender, EventArgs e) {
+            compileSettings.InputMode = ((ToolStripComboBox)sender).SelectedItem is InputMode mode ? mode : InputMode.ASCIICode;
         }
     }
 }

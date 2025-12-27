@@ -1,10 +1,11 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Text;
+using BrainfxxkCompiler.Settings;
 
 namespace BrainfxxkCompiler.Compiler {
     public class FullCSharpCompiler : IBFCompiler {
-        public static string CompileBrainfuck(string brainfuckCode) {
+        public static string CompileBrainfuck(string brainfuckCode, CompileSettings settings) {
             StringBuilder cSharpCode = new StringBuilder();
             cSharpCode.AppendLine("using System;");
             cSharpCode.AppendLine("using System.Collections.Generic;");
@@ -30,8 +31,16 @@ namespace BrainfxxkCompiler.Compiler {
                     case '-': cSharpCode.AppendLine("memory[pointer]--;"); break;
                     case '.': cSharpCode.AppendLine("output.Add((char)memory[pointer]);"); break;
                     case ',':
-                        cSharpCode.AppendLine("Console.WriteLine(\"请输入ASCII码\");");
-                        cSharpCode.AppendLine("memory[pointer] = byte.Parse(Console.ReadLine());");
+                        switch (settings.InputMode) {
+                            case InputMode.Char:
+                                cSharpCode.AppendLine("Console.WriteLine(\"请输入字符\");");
+                                cSharpCode.AppendLine("memory[pointer] = Convert.ToByte(Console.ReadLine()[0]);");
+                                break;
+                            case InputMode.ASCIICode:
+                                cSharpCode.AppendLine("Console.WriteLine(\"请输入字符\");");
+                                cSharpCode.AppendLine("memory[pointer] = byte.Parse(Console.ReadLine());");
+                                break;
+                        }
                         break;
                     case '[':
                         cSharpCode.AppendLine("while (memory[pointer] != 0)");
@@ -66,8 +75,8 @@ namespace BrainfxxkCompiler.Compiler {
             }
         }
 
-        public void CompileToExe(string brainfuckCode, string outputFilePath) {
-            CompileCSharp(CompileBrainfuck(brainfuckCode), outputFilePath);
+        public void CompileToExe(string brainfuckCode, string outputFilePath, CompileSettings settings) {
+            CompileCSharp(CompileBrainfuck(brainfuckCode, settings), outputFilePath);
         }
     }
 }
