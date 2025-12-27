@@ -38,14 +38,14 @@ namespace BrainfxxkCompiler.Compiler
             LocalBuilder lbCurrentPtr = il.DeclareLocal(typeof(byte*));
 
             // 分配 30000 字节内存
-            il.Emit(OpCodes.Ldc_I4, short.MaxValue);
+            il.Emit(OpCodes.Ldc_I4, (int)short.MaxValue);
             il.Emit(OpCodes.Call, typeof(Marshal).GetMethod("AllocHGlobal", new[] { typeof(int) }));
             il.Emit(OpCodes.Stloc, lbBaseAddr);
 
             // 初始化内存为 0
             il.Emit(OpCodes.Ldloc, lbBaseAddr);
             il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Ldc_I4, short.MaxValue);
+            il.Emit(OpCodes.Ldc_I4, (int)short.MaxValue);
             il.Emit(OpCodes.Initblk);
 
             // 设置初始指针

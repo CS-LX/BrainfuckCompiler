@@ -30,14 +30,14 @@ namespace BrainfxxkCompiler.Compiler
             LocalBuilder lbCurrentPtr = il.DeclareLocal(typeof(byte*));
 
             // 1. 申请内存: baseAddress = Marshal.AllocHGlobal(short.MaxValue)
-            il.Emit(OpCodes.Ldc_I4, short.MaxValue);
+            il.Emit(OpCodes.Ldc_I4, (int)short.MaxValue);
             il.Emit(OpCodes.Call, typeof(Marshal).GetMethod("AllocHGlobal", new[] { typeof(int) }));
             il.Emit(OpCodes.Stloc, lbBaseAddr);
 
             // 2. 初始化内存为 0 (类似 ZeroMemory)
             il.Emit(OpCodes.Ldloc, lbBaseAddr);
             il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Ldc_I4, short.MaxValue);
+            il.Emit(OpCodes.Ldc_I4, (int)short.MaxValue);
             il.Emit(OpCodes.Initblk); // 直接初始化内存块
 
             // 3. 设置当前指针: currentPtr = (byte*)baseAddress
